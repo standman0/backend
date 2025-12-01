@@ -1,0 +1,21 @@
+GET /api/services - View services
+GET /api/services/:id - View single service
+GET /api/appointments/slots - Check available slots
+GET /api/settings - View business hours
+POST /api/auth/register - Register
+POST /api/auth/login - Login
+
+Protected Routes (Auth Required):
+
+POST /api/appointments - Book appointment
+GET /api/appointments/my-appointments - View own appointments
+GET /api/auth/me - Get current user
+PUT /api/auth/profile - Update profile
+PUT /api/auth/password - Change password
+
+Admin Only Routes:
+
+All /api/clients routes
+POST/PUT/DELETE /api/services
+Most /api/appointments management routes
+PUT /api/settings
