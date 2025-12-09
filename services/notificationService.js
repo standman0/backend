@@ -451,3 +451,4 @@ ${process.env.BUSINESS_NAME || "Nail Salon"}
     sms: smsResult,
   };
 };
+export {emailTransporter, twilioClient};
