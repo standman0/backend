@@ -15,15 +15,41 @@ import analyticsRoutes from "./routes/analyticsRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import scheduleReminders from "./utils/reminderCron.js";
 
+// Connect DB
 connectDB();
 
 const app = express();
 
-// CORS + JSON (ONE TIME ONLY!)
-app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173'],
-  credentials: true
-}));
+// ---- CORS FIX ----
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "http://localhost:5173",
+  process.env.FRONTEND_URL
+].filter(Boolean); 
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (Postman, mobile apps)
+      if (!origin) return callback(null, true);
+
+      // Allow all *.vercel.app domains
+      if (origin.endsWith(".vercel.app")) {
+        return callback(null, true);
+      }
+
+      // Allow if origin is in the whitelist
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 // API ROUTES
@@ -39,9 +65,11 @@ app.get("/", (req, res) => {
   res.send("Nail Booking API is running...");
 });
 
-const PORT = process.env.PORT || 5000;  // ← Change to 5000 (standard)
+// Server Port
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
 
+// CRON JOBS
 scheduleReminders();
